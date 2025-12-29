@@ -1,6 +1,23 @@
 #include <iostream>
 #include <limits>
 
+/*
+============================================================
+This file is a learning-oriented calculator example.
+
+It demonstrates:
+- Function pointers
+- Input validation
+- Control flow with sentinel values
+- Early return in void functions
+- Common beginner pitfalls (kept as comments with explanation)
+
+All problematic code versions are preserved as comments
+for comparison and learning purposes.
+============================================================
+*/
+
+
 // ---------- UI printing ----------
 void print_menu() {
     std::cout << R"(
@@ -35,6 +52,25 @@ int my_divide(int a, int b) {
     return a / b;
 }
 
+/*
+------------------------------------------------------------
+❌ Common mistake (kept for learning purpose):
+
+int my_divide(int a, int b){
+    if (b == 0)
+        std::cout << "b cannot be 0";
+    else
+        return a / b;
+}
+
+Problem:
+- This function does NOT return a value when b == 0.
+- Non-void functions must return a value in ALL control paths.
+- This leads to undefined behavior and compiler warnings.
+------------------------------------------------------------
+*/
+
+
 // ---------- calculator (function pointer) ----------
 void calculate(int (*op)(int, int)) {
     int a = 0;
@@ -50,6 +86,11 @@ void calculate(int (*op)(int, int)) {
 
         // Discard remaining invalid input
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+        // Early return:
+        // This immediately exits the function.
+        // In a void function, `return;` does NOT return a value.
+        // It only stops further execution of the function.
         return;
     }
 
@@ -57,9 +98,38 @@ void calculate(int (*op)(int, int)) {
     std::cout << "Result: " << result << "\n";
 }
 
+/*
+------------------------------------------------------------
+❌ Earlier version with a logic bug:
+
+void cal(int (*fp)(int,int)){
+    int a = 0;
+    int b = 0;
+    std::cout << "enter two intergers";
+    if(!(std::cin >> a >> b)) {
+        std::cout << "false formats";
+    }
+    int result = fp(a,b);
+    std::cout << result;
+}
+
+Problems:
+1. Even when input fails, the function still calls fp(a, b).
+2. a and b may contain invalid or unchanged values.
+3. Input failure must stop further computation immediately.
+
+Correct approach:
+- Detect invalid input
+- Clear input state
+- Use early return to exit the void function
+------------------------------------------------------------
+*/
+
+
 // ---------- ask whether to continue ----------
 bool ask_continue() {
     int option = 0;
+
     std::cout << "\nDo you want to continue?\n";
     std::cout << "1. Yes\n";
     std::cout << "0. No\n";
@@ -73,6 +143,28 @@ bool ask_continue() {
 
     return option == 1;
 }
+
+/*
+------------------------------------------------------------
+❌ Earlier version using bool input directly:
+
+bool ask(){
+    bool running = false;
+    std::cin >> running;
+    return running == 1;
+}
+
+Problems:
+1. std::cin >> bool treats ANY non-zero value as true.
+2. Input "2", "-1", or "99" will all be interpreted as true.
+3. This breaks the intended rule: "1 means yes, 0 means no".
+
+Correct approach:
+- Use int to receive user choice
+- Explicitly compare with expected values
+------------------------------------------------------------
+*/
+
 
 // ---------- main ----------
 int main() {
