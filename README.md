@@ -33,16 +33,25 @@ This version intentionally supports **integers only** to keep the logic clear an
 
 ---
 
-## Planned Versions
+### Version 1 — Retry-Until-Valid Input (Current)
 
-Future versions will be added to this repository to document the learning progression:
+**File:**  
+`calculator_v1_input_retry.cpp`
 
-- **v1**: Improved input validation and retry logic  
-- **v2**: Function pointer table (removing `switch`)  
-- **v3**: Template-based calculator (supporting `int` and `double`)  
-- **v4**: Lambda and callable-based design  
+**Focus:**
+- Retry-until-valid input handling
+- Robust recovery from invalid user input
+- Explicit management of the `std::cin` state machine
+- Consistent multi-line UI output using raw string literals
 
-Each version will be preserved as a separate `.cpp` file.
+**Key Concepts:**
+- Treating `std::cin` as a state machine (`fail / clear / ignore`)
+- Loop-based input recovery instead of early termination
+- Using helper functions to encapsulate input logic
+- Maintaining strict consistency between prompts and accepted input
+
+This version improves interaction robustness while preserving all v0 constraints
+(no templates, no `auto`, no lambda expressions, integer-only arithmetic).
 
 ---
 
@@ -54,11 +63,12 @@ or a research demonstration.
 It documents:
 - How basic C++ programs grow in structure
 - Common pitfalls in input handling
-- The transition from simple syntax to clearer program design
+- How control flow design affects program robustness
 
 ---
 
 ## Notes
 
 The emphasis is on **clarity and learning**, not on performance or advanced abstractions.
-Comments and structure are kept explicit to make the reasoning easy to follow.
+Mistakes and rejected patterns are sometimes kept as commented examples to make the
+learning process explicit and reviewable.
